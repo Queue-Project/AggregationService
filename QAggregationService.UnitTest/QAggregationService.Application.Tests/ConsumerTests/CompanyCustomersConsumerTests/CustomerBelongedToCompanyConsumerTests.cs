@@ -67,7 +67,7 @@ public class CustomerBelongedToCompanyConsumerTests
             EndTime = DateTimeOffset.UtcNow.Date.AddHours(2),
             Status = UpdatedQueueStatus.Confirmed,
             CancelReason = null,
-            EventType = QueueEventType.Updated
+            EventType = QueueEventType.Created
         };
 
         _mockContext.Setup(s => s.Message).Returns(expectedEvent);

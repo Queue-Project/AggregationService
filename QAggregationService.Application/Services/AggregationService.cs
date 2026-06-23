@@ -466,9 +466,9 @@ public class AggregationService : IAggregationService
             {
                 _logger.LogInformation("Cache miss for AllEmployees, calling QService");
                 return await _userService.GetAllEmployees();
-            }, TimeSpan.FromMinutes(10));
+            }, TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(5));
         
-        if (employees != null && !employees.Any())
+        if (employees == null)
         {
             _logger.LogWarning("Not found any employee");
             throw new HttpStatusCodeException(HttpStatusCode.NotFound, "Not found any employee");
@@ -569,11 +569,11 @@ public class AggregationService : IAggregationService
             {
                 _logger.LogInformation("Cache miss for AllCustomers, calling QService");
                 return await _userService.GetAllCustomers();
-            }, TimeSpan.FromMinutes(10));
-        if (customers != null && !customers.Any())
+            }, TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(5));
+        if (customers == null)
         {
-            _logger.LogWarning("Not found any employee");
-            throw new HttpStatusCodeException(HttpStatusCode.NotFound, "Not found any employee");
+            _logger.LogWarning("Not found any customer");
+            throw new HttpStatusCodeException(HttpStatusCode.NotFound, "Not found any customer");
         }
 
         var customer = customers?.FirstOrDefault(s => s.CustomerId == request.CustomerId);

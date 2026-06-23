@@ -5,7 +5,7 @@ using QAggregationService.Application.Caching;
 
 namespace QAggregationService.Application.Consumers.CompanyConsumers;
 
-public class CompanyDeletedConsumer: IConsumer<CompanyDeletedEvent>
+public class CompanyDeletedConsumer : IConsumer<CompanyDeletedEvent>
 {
     private readonly ILogger<CompanyDeletedConsumer> _logger;
     private readonly IMemoryCacheService _memoryCacheService;
@@ -20,10 +20,10 @@ public class CompanyDeletedConsumer: IConsumer<CompanyDeletedEvent>
     {
         _logger.LogInformation("Processing cache reset for company {companyId}", context.Message.CompanyId);
 
-        
-        
+        _memoryCacheService.Remove(CacheKeys.CompanyId(context.Message.CompanyId));
+
+
         _logger.LogInformation("Cache reset processed for company {companyId}", context.Message.CompanyId);
         return Task.CompletedTask;
-        
     }
 }

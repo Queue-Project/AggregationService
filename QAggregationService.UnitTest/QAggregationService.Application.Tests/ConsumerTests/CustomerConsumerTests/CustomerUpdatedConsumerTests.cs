@@ -2,39 +2,37 @@ using MassTransit;
 using Microsoft.Extensions.Logging;
 using Moq;
 using QAggregationService.Application.Caching;
-using QAggregationService.Application.Consumers.BlockedCustomerConsumers;
-using QAuthService.Contracts.Events.BlockedCustomerEvent;
+using QAggregationService.Application.Consumers.CustomerConsumers;
+using QAuthService.Contracts.Events.CustomerEvent;
 using Shouldly;
 
-namespace QAggregationService.UnitTest.QAggregationService.Application.Tests.ConsumerTests.BlockedCustomerConsumerTests;
+namespace QAggregationService.UnitTest.QAggregationService.Application.Tests.ConsumerTests.CustomerConsumerTests;
 
-public class BlockedCustomerCreatedConsumerTests
+public class CustomerUpdatedConsumerTests
 {
-    private readonly Mock<ILogger<BlockedCustomerCreatedConsumer>> _mockLogger;
-    private readonly Mock<ConsumeContext<BlockedCustomerCreatedEvent>> _mockContext;
+    private readonly Mock<ILogger<CustomerUpdatedConsumer>> _mockLogger;
+    private readonly Mock<ConsumeContext<CustomerUpdatedEvent>> _mockContext;
     private readonly Mock<ICacheService> _mockCacheService;
-    private readonly BlockedCustomerCreatedConsumer _consumer;
+    private readonly CustomerUpdatedConsumer _consumer;
 
-    public BlockedCustomerCreatedConsumerTests()
+    public CustomerUpdatedConsumerTests()
     {
-        _mockLogger = new Mock<ILogger<BlockedCustomerCreatedConsumer>>();
-        _mockContext = new Mock<ConsumeContext<BlockedCustomerCreatedEvent>>();
+        _mockLogger = new Mock<ILogger<CustomerUpdatedConsumer>>();
+        _mockContext = new Mock<ConsumeContext<CustomerUpdatedEvent>>();
         _mockCacheService = new Mock<ICacheService>();
-        _consumer = new BlockedCustomerCreatedConsumer(_mockLogger.Object, _mockCacheService.Object);
+        _consumer = new CustomerUpdatedConsumer(_mockLogger.Object, _mockCacheService.Object);
     }
 
     [Fact]
     public async Task Consume_Should_Remove_BlockedCustomer_From_Cache_When_Event_Received()
     {
         //Arrange
-        var expectedEvent = new BlockedCustomerCreatedEvent
+        var expectedEvent = new CustomerUpdatedEvent
         {
-            CompanyId = 1,
             CustomerId = 1,
-            BlockedCustomerId = 1,
-            DoesBanForever = false,
-            BannedUntil = DateTime.UtcNow.Date.AddMonths(1),
-            Reason = null,
+            FirstName = "Test Firstname",
+            LastName = "Test Lastname",
+            PhoneNumber = "+992923324252",
             OccuredAt = DateTime.UtcNow
         };
 

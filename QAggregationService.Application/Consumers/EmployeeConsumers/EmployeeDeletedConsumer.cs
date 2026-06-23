@@ -1,7 +1,7 @@
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using QAggregationService.Application.Caching;
-using QContracts.Events.EmployeeEvent;
+using QAuthService.Contracts.Events.EmployeeEvent;
 
 namespace QAggregationService.Application.Consumers.EmployeeConsumers;
 

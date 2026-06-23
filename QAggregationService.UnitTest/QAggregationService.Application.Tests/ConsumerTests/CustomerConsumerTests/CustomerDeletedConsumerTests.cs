@@ -24,7 +24,7 @@ public class CustomerDeletedConsumerTests
     }
 
     [Fact]
-    public async Task Consume_Should_Remove_BlockedCustomer_From_Cache_When_Event_Received()
+    public async Task Consume_Should_Remove_Customer_From_Cache_When_Event_Received()
     {
         //Arrange
         var expectedEvent = new CustomerDeletedEvent

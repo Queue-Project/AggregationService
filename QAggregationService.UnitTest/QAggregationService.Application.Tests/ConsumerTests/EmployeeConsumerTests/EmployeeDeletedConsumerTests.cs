@@ -2,38 +2,41 @@ using MassTransit;
 using Microsoft.Extensions.Logging;
 using Moq;
 using QAggregationService.Application.Caching;
-using QAggregationService.Application.Consumers.CustomerConsumers;
-using QAuthService.Contracts.Events.CustomerEvent;
+using QAggregationService.Application.Consumers.EmployeeConsumers;
+using QAuthService.Contracts.Events.EmployeeEvent;
 using Shouldly;
 
-namespace QAggregationService.UnitTest.QAggregationService.Application.Tests.ConsumerTests.CustomerConsumerTests;
+namespace QAggregationService.UnitTest.QAggregationService.Application.Tests.ConsumerTests.EmployeeConsumerTests;
 
-public class CustomerCreatedConsumerTests
+public class EmployeeDeletedConsumerTests
 {
-    private readonly Mock<ILogger<CustomerCreatedConsumer>> _mockLogger;
-    private readonly Mock<ConsumeContext<CustomerCreatedEvent>> _mockContext;
+    private readonly Mock<ILogger<EmployeeDeletedConsumer>> _mockLogger;
+    private readonly Mock<ConsumeContext<EmployeeDeletedEvent>> _mockContext;
     private readonly Mock<ICacheService> _mockCacheService;
-    private readonly CustomerCreatedConsumer _consumer;
+    private readonly EmployeeDeletedConsumer _consumer;
 
-    public CustomerCreatedConsumerTests()
+    public EmployeeDeletedConsumerTests()
     {
-        _mockLogger = new Mock<ILogger<CustomerCreatedConsumer>>();
-        _mockContext = new Mock<ConsumeContext<CustomerCreatedEvent>>();
+        _mockLogger = new Mock<ILogger<EmployeeDeletedConsumer>>();
+        _mockContext = new Mock<ConsumeContext<EmployeeDeletedEvent>>();
         _mockCacheService = new Mock<ICacheService>();
-        _consumer = new CustomerCreatedConsumer(_mockLogger.Object, _mockCacheService.Object);
+        _consumer = new EmployeeDeletedConsumer(_mockLogger.Object, _mockCacheService.Object);
     }
 
     [Fact]
-    public async Task Consume_Should_Remove_Customer_From_Cache_When_Event_Received()
+    public async Task Consume_Should_Remove_Employee_From_Cache_When_Event_Received()
     {
         //Arrange
-        var expectedEvent = new CustomerCreatedEvent
+        var expectedEvent = new EmployeeDeletedEvent
         {
-            CustomerId = 1,
+            EmployeeId = 1,
+            CompanyId = 1,
+            BranchId = 1,
+            ServiceId = 1,
             FirstName = "Test Firstname",
             LastName = "Test Lastname",
             PhoneNumber = "+992923324252",
-            OccuredAt = DateTime.UtcNow
+            Position = "Test Position",
         };
 
         _mockContext.Setup(s => s.Message).Returns(expectedEvent);
@@ -43,7 +46,7 @@ public class CustomerCreatedConsumerTests
         await _consumer.Consume(_mockContext.Object);
 
         //Assert
-        _mockCacheService.Verify(s => s.RemoveAsync(It.IsAny<string>()), Times.AtLeast(2));
+        _mockCacheService.Verify(s => s.RemoveAsync(It.IsAny<string>()), Times.AtLeast(3));
     }
 
     [Fact]

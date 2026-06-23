@@ -71,7 +71,7 @@ public class AggregationService : IAggregationService
             {
                 _logger.LogInformation("Branch with Id {branchId} not found", request.BranchId.Value);
                 throw new HttpStatusCodeException(HttpStatusCode.NotFound,
-                    companyResult.ErrorMessage ?? "Branch not found");
+                    branchResult.ErrorMessage ?? "Branch not found");
             }
 
            
@@ -91,7 +91,7 @@ public class AggregationService : IAggregationService
             {
                 _logger.LogInformation("Company service with Id {serviceId} not found", request.ServiceId.Value);
                 throw new HttpStatusCodeException(HttpStatusCode.NotFound,
-                    companyResult.ErrorMessage ?? "Company service not found");
+                    companyServiceResult.ErrorMessage ?? "Company service not found");
             }
 
             
@@ -108,7 +108,7 @@ public class AggregationService : IAggregationService
                 _logger.LogInformation("Cache miss for CompanyCustomers {CompanyId}, calling QService",
                     request.CompanyId.Value);
                 return await _queueService.GetAllCompanyCustomers(request.CompanyId.Value);
-            }, TimeSpan.FromMinutes(10)
+            }, TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(5)
         );
 
 
@@ -119,7 +119,7 @@ public class AggregationService : IAggregationService
                 _logger.LogInformation("Cache miss for CompanyBlockedCustomers {CompanyId}, calling QService",
                     request.CompanyId.Value);
                 return await _userService.GetAllCompanyBlockedCustomers(request.CompanyId.Value);
-            }, TimeSpan.FromMinutes(10));
+            }, TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(5));
 
         var employees = await _cacheService.GetOrCreateAsync(
             CacheKeys.CompanyEmployees(request.CompanyId.Value),
@@ -129,7 +129,7 @@ public class AggregationService : IAggregationService
                     request.CompanyId.Value);
                 return await _userService.GetAllCompanyEmployees(request.CompanyId.Value);
             },
-            TimeSpan.FromMinutes(10)
+            TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(5)
         );
 
         var filteredQueues = companyQueues.AsEnumerable();

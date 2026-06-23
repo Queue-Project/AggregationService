@@ -1,7 +1,10 @@
+using BranchService.Contracts.Responses;
 using QContracts.Enums;
 using QContracts.Responses;
 using CustomerInfo = QUserService.Contracts.Responses.CustomerResponses.CustomerInfo;
 using EmployeeInfo = QUserService.Contracts.Responses.EmployeeResponses.EmployeeInfo;
+using BlockedCustomerInfo = QUserService.Contracts.Responses.BlockedCustomersResponses.BlockedCustomerInfo;
+
 
 
 namespace QAggregationService.UnitTest.QAggregationService.Application.Tests.Extensions;
@@ -80,6 +83,27 @@ public static class TestData
                 FirstName = "Test Firstname2",
                 LastName = "Test Lastname2",
                 CreatedAt = DateTime.UtcNow
+            }
+        };
+        
+        
+    }
+    
+    
+    
+    public static List<BlockedCustomerInfo> BlockedCustomerInfos()
+    {
+        return new List<BlockedCustomerInfo>()
+        {
+            new BlockedCustomerInfo
+            {
+                CompanyId = 1,
+                BlockedId = 1,
+                CustomerId = 4,
+                DoesBanForever = false,
+                BannedUntil = DateTime.UtcNow.Date.AddMonths(1),
+                Reason = "Did Not Come 3 times",
+                CreatedAt = new DateTime(2026, 06, 20, 09, 00, 00)
             }
         };
     }
@@ -184,6 +208,48 @@ public static class TestData
             },
         };
     }
+
+    public static CompanyResponse CompanyResponse()
+    {
+        return new CompanyResponse
+        {
+            RequestId = Guid.NewGuid(),
+            CompanyId = 1,
+            CompanyName = "Test Company Name",
+            IsValid = true,
+            ErrorMessage = null
+        };
+    }
+
+    public static BranchResponse BranchResponse()
+    {
+        return new BranchResponse
+        {
+            RequestId = Guid.NewGuid(),
+            CompanyId = 1,
+            BranchId = 1,
+            BranchName = "Test Branch Name",
+            IsValid = true,
+            ErrorMessage = null
+        };
+    }
+
+    public static CompanyServiceResponse CompanyServiceResponse()
+    {
+        return new CompanyServiceResponse
+        {
+            RequestId = Guid.NewGuid(),
+            CompanyId = 1,
+            CompanyServiceId = 1,
+            CompanyServiceName = "Test Service Name",
+            IsValid = true,
+            ErrorMessage = null
+        };
+    }
+
+ 
+
+   
     
     
     

@@ -291,7 +291,7 @@ public class AggregationService : IAggregationService
             {
                 _logger.LogInformation("Cache miss for CompanyCustomers {CompanyId}, calling QService", companyId);
                 return await _queueService.GetAllCompanyCustomers(companyId);
-            }, TimeSpan.FromMinutes(10)
+            }, TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(5)
         );
 
 
@@ -302,7 +302,7 @@ public class AggregationService : IAggregationService
                 _logger.LogInformation("Cache miss for CompanyBlockedCustomers {CompanyId}, calling QService",
                     companyId);
                 return await _userService.GetAllCompanyBlockedCustomers(companyId);
-            }, TimeSpan.FromMinutes(10));
+            }, TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(5));
 
         var companyEmployees = await _cacheService.GetOrCreateAsync(
             CacheKeys.CompanyEmployees(companyId),
@@ -311,7 +311,7 @@ public class AggregationService : IAggregationService
                 _logger.LogInformation("Cache miss for CompanyEmployees {CompanyId}, calling QService", companyId);
                 return await _userService.GetAllCompanyEmployees(companyId);
             },
-            TimeSpan.FromMinutes(10)
+            TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(5)
         );
         var companyQueues = await _queueService.GetCompanyQueuesAsync(companyId);
         var companyReviews = await _queueService.GetCompanyReviewsAsync(companyId);

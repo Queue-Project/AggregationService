@@ -188,6 +188,35 @@ public class GetReportAsyncTests
         result.TotalQueues.ShouldBe(2);
 
     }
+    
+    [Fact]
+    public async Task Service_Should_Throw_When_CompanyId_Is_Null()
+    {
+        //Arrange
+        var request = new ReportRequest()
+        {
+            CompanyId = null,
+            BranchId = 1,
+            ServiceId = 1,
+            PageNumber = 1,
+            PageSize = 15,
+            QueueStatus = CurrentQueueStatus.Completed,
+            ComplaintStatus = CurrentComplaintStatus.Pending,
+            FromDate = new DateTime(2026, 06, 06),
+            ToDate = new DateTime(2026, 06, 23)
+        };
+        
+          
+        //Act
+        var result =  _aggregationService.GetReportAsync(request);
+        
+        //
+
+        var exception = await result.ShouldThrowAsync<ArgumentException>();
+    
+        exception.Message.ShouldBe("Company is required");
+
+    }
 
     [Fact]
     public async Task Service_Should_Throw_When_Company_Not_Found()

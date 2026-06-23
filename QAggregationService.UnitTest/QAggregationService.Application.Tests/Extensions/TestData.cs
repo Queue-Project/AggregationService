@@ -1,10 +1,10 @@
 using BranchService.Contracts.Responses;
 using QContracts.Enums;
 using QContracts.Responses;
+using RabbitMQ.Client;
 using CustomerInfo = QUserService.Contracts.Responses.CustomerResponses.CustomerInfo;
 using EmployeeInfo = QUserService.Contracts.Responses.EmployeeResponses.EmployeeInfo;
 using BlockedCustomerInfo = QUserService.Contracts.Responses.BlockedCustomersResponses.BlockedCustomerInfo;
-
 
 
 namespace QAggregationService.UnitTest.QAggregationService.Application.Tests.Extensions;
@@ -55,17 +55,17 @@ public static class TestData
             }
         };
     }
-    
+
     public static List<CustomerInfo> CustomerInfos()
     {
         return new List<CustomerInfo>
         {
             new CustomerInfo
             {
-                 CustomerId = 1,
+                CustomerId = 1,
                 FirstName = "Test Firstname",
                 LastName = "Test Lastname",
-               
+
                 CreatedAt = DateTime.UtcNow
             },
 
@@ -85,12 +85,9 @@ public static class TestData
                 CreatedAt = DateTime.UtcNow
             }
         };
-        
-        
     }
-    
-    
-    
+
+
     public static List<BlockedCustomerInfo> BlockedCustomerInfos()
     {
         return new List<BlockedCustomerInfo>()
@@ -181,7 +178,7 @@ public static class TestData
             }
         };
     }
-    
+
     public static List<ReviewInfo> ReviewInfos()
     {
         return new List<ReviewInfo>
@@ -194,7 +191,7 @@ public static class TestData
                 EmployeeId = 1,
                 Grade = 4,
                 ReviewText = "Test Review Text",
-                 CreatedAt   = new DateTime(2026, 06, 20, 13, 00, 00)
+                CreatedAt = new DateTime(2026, 06, 20, 13, 00, 00)
             },
             new ReviewInfo
             {
@@ -204,7 +201,7 @@ public static class TestData
                 EmployeeId = 1,
                 Grade = 5,
                 ReviewText = "Test Review Text",
-                CreatedAt   = new DateTime(2026, 06, 21, 13, 20, 00)
+                CreatedAt = new DateTime(2026, 06, 21, 13, 20, 00)
             },
         };
     }
@@ -247,30 +244,54 @@ public static class TestData
         };
     }
 
- 
+    public static List<BranchResponse> CompanyBranches()
+    {
+        return new List<BranchResponse>
+        {
+            new BranchResponse
+            {
+                RequestId = Guid.NewGuid(),
+                CompanyId = 1,
+                BranchId = 1,
+                BranchName = "Test Branch Name",
+                IsValid = true,
+            },
+            new BranchResponse
+            {
+                RequestId = Guid.NewGuid(),
+                CompanyId = 1,
+                BranchId = 2,
+                BranchName = "Test Branch Name2",
+                IsValid = true,
+            },
+        };
+    }
 
-   
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+    public static List<CompanyServiceResponse> CompanyServices()
+    {
+        return new List<CompanyServiceResponse>
+        {
+            new CompanyServiceResponse
+            {
+                RequestId = Guid.NewGuid(),
+                CompanyId = 1,
+                CompanyServiceId = 1,
+                CompanyServiceName = "Test Service Name",
+                IsValid = true,
+                ErrorMessage = null
+            },
+            new CompanyServiceResponse
+            {
+                RequestId = Guid.NewGuid(),
+                CompanyId = 1,
+                CompanyServiceId = 2,
+                CompanyServiceName = "Test Service Name2",
+                IsValid = true,
+                ErrorMessage = null
+            }
+        };
+    }
     
     
     

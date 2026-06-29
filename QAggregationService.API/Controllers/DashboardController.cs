@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using QAggregationService.Contracts.Interfaces;
 using QAggregationService.Contracts.Responses;
 
-namespace QAggregationService.Controllers;
+namespace QAggregationService.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

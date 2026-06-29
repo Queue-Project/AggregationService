@@ -25,16 +25,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenLocalhost(5007, listenOptions => 
+    options.ListenAnyIP(5007, listenOptions => 
     { 
         listenOptions.Protocols = HttpProtocols.Http2;
     });
 
-    options.ListenLocalhost(5008, listenOptions => 
+    options.ListenAnyIP(5008, listenOptions => 
     { 
         listenOptions.Protocols = HttpProtocols.Http1;
     });
 });
+
+
 
 builder.Services.AddMagicOnion();
 

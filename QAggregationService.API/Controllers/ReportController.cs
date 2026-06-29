@@ -4,7 +4,7 @@ using QAggregationService.Contracts.Interfaces;
 using QAggregationService.Contracts.Requests;
 using QAggregationService.Contracts.Responses;
 
-namespace QAggregationService.Controllers;
+namespace QAggregationService.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

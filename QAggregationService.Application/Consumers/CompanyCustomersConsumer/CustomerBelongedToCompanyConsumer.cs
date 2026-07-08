@@ -2,7 +2,7 @@ using MassTransit;
 using Microsoft.Extensions.Logging;
 using QAggregationService.Application.Caching;
 using QContracts.Events;
-using QContracts.QueueEvents.Enums;
+using QContracts.Events.Enums;
 
 namespace QAggregationService.Application.Consumers.CompanyCustomersConsumer;
 

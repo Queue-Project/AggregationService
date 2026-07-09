@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using QAggregationService.Application.Caching;
 using QAggregationService.Application.Consumers.BlockedCustomerConsumers;
-using QAuthService.Contracts.Events.BlockedCustomerEvent;
+using QUserService.Contracts.Events.BlockedCustomerEvent;
 using Shouldly;
 
 namespace QAggregationService.UnitTest.QAggregationService.Application.Tests.ConsumerTests.BlockedCustomerConsumerTests;

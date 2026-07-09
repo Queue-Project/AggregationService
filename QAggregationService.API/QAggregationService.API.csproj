@@ -4,20 +4,27 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="BranchService.Contracts" Version="1.0.0" />
+      <PackageReference Include="BranchService.Contracts" Version="1.0.5" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.11" />
-      <PackageReference Include="QueueService.Contracts" Version="1.0.0" />
+      <PackageReference Include="QueueService.Contracts" Version="1.0.2" />
       <PackageReference Include="StackExchange.Redis" Version="2.7.27" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
       <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="9.0.6" />
-      <PackageReference Include="UserService.Contracts" Version="1.0.0" />
+      <PackageReference Include="UserService.Contracts" Version="1.0.3" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\QAggregationService.Application\QAggregationService.Application.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>

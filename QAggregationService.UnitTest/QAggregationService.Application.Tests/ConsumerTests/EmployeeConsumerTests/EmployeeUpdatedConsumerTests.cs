@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using QAggregationService.Application.Caching;
 using QAggregationService.Application.Consumers.EmployeeConsumers;
-using QAuthService.Contracts.Events.EmployeeEvent;
+using QUserService.Contracts.Events.EmployeeEvent;
 using Shouldly;
 
 namespace QAggregationService.UnitTest.QAggregationService.Application.Tests.ConsumerTests.EmployeeConsumerTests;

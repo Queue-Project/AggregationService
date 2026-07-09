@@ -4,7 +4,7 @@ using Moq;
 using QAggregationService.Application.Caching;
 using QAggregationService.Application.Consumers.CompanyCustomersConsumer;
 using QContracts.Events;
-using QContracts.QueueEvents.Enums;
+using QContracts.Events.Enums;
 using Shouldly;
 
 namespace QAggregationService.UnitTest.QAggregationService.Application.Tests.ConsumerTests.CompanyCustomersConsumerTests;

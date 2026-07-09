@@ -21,4 +21,9 @@
         <Using Include="Xunit"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\QAggregationService.Application\QAggregationService.Application.csproj" />
+      <ProjectReference Include="..\QAggregationService.Contracts\QAggregationService.Contracts.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -71,7 +71,7 @@ public class AggregationService : IAggregationService
             {
                 _logger.LogInformation("Branch with Id {branchId} not found", request.BranchId.Value);
                 throw new HttpStatusCodeException(HttpStatusCode.NotFound,
-                    companyResult.ErrorMessage ?? "Branch not found");
+                    branchResult.ErrorMessage ?? "Branch not found");
             }
 
            
@@ -91,7 +91,7 @@ public class AggregationService : IAggregationService
             {
                 _logger.LogInformation("Company service with Id {serviceId} not found", request.ServiceId.Value);
                 throw new HttpStatusCodeException(HttpStatusCode.NotFound,
-                    companyResult.ErrorMessage ?? "Company service not found");
+                    companyServiceResult.ErrorMessage ?? "Company service not found");
             }
 
             
@@ -108,7 +108,7 @@ public class AggregationService : IAggregationService
                 _logger.LogInformation("Cache miss for CompanyCustomers {CompanyId}, calling QService",
                     request.CompanyId.Value);
                 return await _queueService.GetAllCompanyCustomers(request.CompanyId.Value);
-            }, TimeSpan.FromMinutes(10)
+            }, TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(5)
         );
 
 
@@ -119,7 +119,7 @@ public class AggregationService : IAggregationService
                 _logger.LogInformation("Cache miss for CompanyBlockedCustomers {CompanyId}, calling QService",
                     request.CompanyId.Value);
                 return await _userService.GetAllCompanyBlockedCustomers(request.CompanyId.Value);
-            }, TimeSpan.FromMinutes(10));
+            }, TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(5));
 
         var employees = await _cacheService.GetOrCreateAsync(
             CacheKeys.CompanyEmployees(request.CompanyId.Value),
@@ -129,7 +129,7 @@ public class AggregationService : IAggregationService
                     request.CompanyId.Value);
                 return await _userService.GetAllCompanyEmployees(request.CompanyId.Value);
             },
-            TimeSpan.FromMinutes(10)
+            TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(5)
         );
 
         var filteredQueues = companyQueues.AsEnumerable();
@@ -291,7 +291,7 @@ public class AggregationService : IAggregationService
             {
                 _logger.LogInformation("Cache miss for CompanyCustomers {CompanyId}, calling QService", companyId);
                 return await _queueService.GetAllCompanyCustomers(companyId);
-            }, TimeSpan.FromMinutes(10)
+            }, TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(5)
         );
 
 
@@ -302,7 +302,7 @@ public class AggregationService : IAggregationService
                 _logger.LogInformation("Cache miss for CompanyBlockedCustomers {CompanyId}, calling QService",
                     companyId);
                 return await _userService.GetAllCompanyBlockedCustomers(companyId);
-            }, TimeSpan.FromMinutes(10));
+            }, TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(5));
 
         var companyEmployees = await _cacheService.GetOrCreateAsync(
             CacheKeys.CompanyEmployees(companyId),
@@ -311,7 +311,7 @@ public class AggregationService : IAggregationService
                 _logger.LogInformation("Cache miss for CompanyEmployees {CompanyId}, calling QService", companyId);
                 return await _userService.GetAllCompanyEmployees(companyId);
             },
-            TimeSpan.FromMinutes(10)
+            TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(5)
         );
         var companyQueues = await _queueService.GetCompanyQueuesAsync(companyId);
         var companyReviews = await _queueService.GetCompanyReviewsAsync(companyId);
@@ -466,9 +466,9 @@ public class AggregationService : IAggregationService
             {
                 _logger.LogInformation("Cache miss for AllEmployees, calling QService");
                 return await _userService.GetAllEmployees();
-            }, TimeSpan.FromMinutes(10));
+            }, TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(5));
         
-        if (employees != null && !employees.Any())
+        if (employees == null)
         {
             _logger.LogWarning("Not found any employee");
             throw new HttpStatusCodeException(HttpStatusCode.NotFound, "Not found any employee");
@@ -569,11 +569,11 @@ public class AggregationService : IAggregationService
             {
                 _logger.LogInformation("Cache miss for AllCustomers, calling QService");
                 return await _userService.GetAllCustomers();
-            }, TimeSpan.FromMinutes(10));
-        if (customers != null && !customers.Any())
+            }, TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(5));
+        if (customers == null)
         {
-            _logger.LogWarning("Not found any employee");
-            throw new HttpStatusCodeException(HttpStatusCode.NotFound, "Not found any employee");
+            _logger.LogWarning("Not found any customer");
+            throw new HttpStatusCodeException(HttpStatusCode.NotFound, "Not found any customer");
         }
 
         var customer = customers?.FirstOrDefault(s => s.CustomerId == request.CustomerId);

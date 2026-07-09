@@ -2,6 +2,8 @@ namespace QAggregationService.Application.Caching;
 
 public static class CacheKeys
 {
+    public static string CompanyId(int id)
+        => $"Company:{id}";
     public static string EmployeeId(int id)
         => $"Employee:{id}";
     public static string CompanyEmployees(int companyId)

@@ -7,9 +7,13 @@ using QAggregationService.Application.Exceptions;
 using QAggregationService.Contracts.Interfaces;
 using QAggregationService.Contracts.Requests;
 using QAggregationService.Contracts.Responses;
+using QAggregationService.Contracts.Responses.ScheduleResponse;
 using QContracts.Enums;
 using QContracts.Interfaces;
+using QContracts.Requests;
+using QContracts.Responses;
 using QUserService.Contracts.Interfaces;
+using QUserService.Contracts.Requests.EmployeeRequests;
 
 namespace QAggregationService.Application.Services;
 
@@ -17,13 +21,14 @@ public class AggregationService : IAggregationService
 {
     private readonly IQueueService _queueService;
     private readonly IBranchService _branchService;
-    private readonly IUserService _userService; 
+    private readonly IUserService _userService;
     private readonly ILogger<AggregationService> _logger;
     private readonly ICacheService _cacheService;
     private readonly IMemoryCacheService _memoryCacheService;
 
     public AggregationService(IQueueService queueService, IBranchService branchService,
-        ILogger<AggregationService> logger, ICacheService cacheService, IMemoryCacheService memoryCacheService, IUserService userService)
+        ILogger<AggregationService> logger, ICacheService cacheService, IMemoryCacheService memoryCacheService,
+        IUserService userService)
     {
         _queueService = queueService;
         _branchService = branchService;
@@ -73,8 +78,6 @@ public class AggregationService : IAggregationService
                 throw new HttpStatusCodeException(HttpStatusCode.NotFound,
                     branchResult.ErrorMessage ?? "Branch not found");
             }
-
-           
         }
 
         if (request.ServiceId.HasValue)
@@ -93,8 +96,6 @@ public class AggregationService : IAggregationService
                 throw new HttpStatusCodeException(HttpStatusCode.NotFound,
                     companyServiceResult.ErrorMessage ?? "Company service not found");
             }
-
-            
         }
 
         var companyQueues = await _queueService.GetCompanyQueuesAsync(request.CompanyId.Value);
@@ -460,14 +461,14 @@ public class AggregationService : IAggregationService
 
     public async Task<EmployeeReportResponse> GetEmployeeReport(EmployeeReportRequest request)
     {
-        var employees= await _cacheService.GetOrCreateAsync(
+        var employees = await _cacheService.GetOrCreateAsync(
             CacheKeys.AllEmployees(),
             async () =>
             {
                 _logger.LogInformation("Cache miss for AllEmployees, calling QService");
                 return await _userService.GetAllEmployees();
             }, TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(5));
-        
+
         if (employees == null)
         {
             _logger.LogWarning("Not found any employee");
@@ -562,7 +563,6 @@ public class AggregationService : IAggregationService
 
     public async Task<CustomerReportResponse> GetCustomerReport(CustomerReportRequest request)
     {
-
         var customers = await _cacheService.GetOrCreateAsync(
             CacheKeys.AllCustomers(),
             async () =>
@@ -663,6 +663,114 @@ public class AggregationService : IAggregationService
             ResolvedComplaints = resolvedComplaints,
             RecentQueues = recentQueueItem
         };
+
+        return response;
+    }
+
+    public async Task<EmployeeAvailabilityScheduleResponse> GetEmployeeAvailabilityScheduleByDate(
+        GetEmployeeAvailabilityScheduleRequest request)
+    {
+        _logger.LogInformation(
+            "Fetching available schedule for Employee Id {EmployeeId}",
+            request.EmployeeId);
+
+        var employeeSchedule = await _userService.GetEmployeeSchedule(
+            new EmployeeScheduleRequest
+            {
+                RequestId = Guid.NewGuid(),
+                EmployeeId = request.EmployeeId,
+                Date = request.Date
+            });
+
+        if (!employeeSchedule.Schedules.Any())
+        {
+            _logger.LogError(
+                "Employee with Id {EmployeeId} does not have schedule for selected date {Date}",
+                request.EmployeeId,
+                request.Date);
+
+            throw new HttpStatusCodeException(
+                HttpStatusCode.BadRequest,
+                $"Employee with Id {request.EmployeeId} does not have schedule for selected date {request.Date}");
+        }
+
+        var employeeQueues = await _queueService.GetEmployeeQueuesByDate(
+            new EmployeeQueuesByDateRequest
+            {
+                EmployeeId = request.EmployeeId,
+                Date = request.Date
+            });
+
+        var response = new EmployeeAvailabilityScheduleResponse
+        {
+            EmployeeId = request.EmployeeId,
+            Date = request.Date
+        };
+
+        foreach (var schedule in employeeSchedule.Schedules)
+        {
+            var scheduleResponse = new ScheduleAvailabilityResponse
+            {
+                ScheduleId = schedule.ScheduleId,
+                Description = schedule.Description
+            };
+
+            foreach (var workingSlot in schedule.AvailableSlots)
+            {
+                var queuesInSlot = employeeQueues
+                    .Where(q =>
+                        q.StartTime < workingSlot.To &&
+                        q.EndTime.HasValue &&
+                        q.EndTime.Value > workingSlot.From)
+                    .OrderBy(q => q.StartTime)
+                    .ToList();
+
+                var current = workingSlot.From;
+
+                foreach (var queue in queuesInSlot)
+                {
+                    var bookedStart = queue.StartTime < workingSlot.From
+                        ? workingSlot.From
+                        : queue.StartTime;
+
+                    var bookedEnd = queue.EndTime!.Value > workingSlot.To
+                        ? workingSlot.To
+                        : queue.EndTime.Value;
+
+                    if (current < bookedStart)
+                    {
+                        scheduleResponse.AvailableSlots.Add(new AvailableSlotResponse
+                        {
+                            From = current,
+                            To = bookedStart
+                        });
+                    }
+
+                    scheduleResponse.BookedSlots.Add(new BookedSlotResponse
+                    {
+                        QueueId = queue.Id,
+                        From = bookedStart,
+                        To = bookedEnd,
+                        Status = queue.CurrentQueueStatus,
+                        CustomerId = queue.CustomerId,
+                        CustomerName = queue.CustomerName
+                    });
+
+                    current = bookedEnd;
+                }
+
+                if (current < workingSlot.To)
+                {
+                    scheduleResponse.AvailableSlots.Add(new AvailableSlotResponse
+                    {
+                        From = current,
+                        To = workingSlot.To
+                    });
+                }
+            }
+
+            response.Schedules.Add(scheduleResponse);
+        }
 
         return response;
     }

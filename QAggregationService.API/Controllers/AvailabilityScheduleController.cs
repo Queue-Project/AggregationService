@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QAggregationService.Contracts.Interfaces;
 using QAggregationService.Contracts.Requests;
@@ -18,6 +19,7 @@ public class AvailabilityScheduleController : ControllerBase
         _logger = logger;
     }
 
+    [Authorize(Roles = "Customer")]
     [HttpGet("get-availability-schedule")]
     public async Task<ActionResult<CustomerReportResponse>> GetAvailabilitySchedule(
         [FromQuery] GetEmployeeAvailabilityScheduleRequest request)

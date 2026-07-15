@@ -8,15 +8,15 @@ using RecommendationService.Contracts.Requests;
 namespace QAggregationService.Application.UseCases.Queries.RecommendationService.GetServiceRecommendations;
 
 public class
-    GetEmployeeRecommendationQueryHandler : IRequestHandler<GetServiceRecommendationQuery,
+    GetServiceRecommendationQueryHandler : IRequestHandler<GetServiceRecommendationQuery,
     PagedResponse<RecommendedServiceResponse>>
 {
     private const int PageSize = 15;
-    private readonly ILogger<GetEmployeeRecommendationQueryHandler> _logger;
+    private readonly ILogger<GetServiceRecommendationQueryHandler> _logger;
     private readonly IBranchService _branchService;
     private readonly IRecommendationService _recommendationService;
 
-    public GetEmployeeRecommendationQueryHandler(ILogger<GetEmployeeRecommendationQueryHandler> logger,
+    public GetServiceRecommendationQueryHandler(ILogger<GetServiceRecommendationQueryHandler> logger,
         IBranchService branchService, IRecommendationService recommendationService)
     {
         _logger = logger;

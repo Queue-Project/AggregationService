@@ -1,5 +1,6 @@
 using System.Text;
 using BranchService.Contracts.Interfaces;
+using FluentValidation.AspNetCore;
 using MagicOnion.Client;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using QAggregationService.Application.Services;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using QAggregationService.API.Middlewares;
+using QAggregationService.Application;
 using QAggregationService.Application.Caching;
 using QAggregationService.Application.Consumers.BlockedCustomerConsumers;
 using QAggregationService.Application.Consumers.BranchConsumers;
@@ -18,8 +20,10 @@ using QAggregationService.Application.Consumers.CompanyCustomersConsumer;
 using QAggregationService.Application.Consumers.CompanyServiceConsumers;
 using QAggregationService.Application.Consumers.CustomerConsumers;
 using QAggregationService.Application.Consumers.EmployeeConsumers;
+using QAggregationService.Application.Validators;
 using QContracts.Interfaces;
 using QUserService.Contracts.Interfaces;
+using RecommendationService.Contracts.Interfaces;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +37,11 @@ builder.WebHost.ConfigureKestrel(options =>
 
 
 builder.Services.AddMagicOnion();
+builder.Services.AddApplicationService();
+builder.Services.AddFluentValidation(fv =>
+{
+    fv.RegisterValidatorsFromAssemblyContaining<GetBranchRecommendationQueryValidator>();
+});
 
 var branchServiceUrl = builder.Configuration["Services:BranchService"]
                        ?? "http://localhost:5001";
@@ -49,6 +58,11 @@ var queueServiceUrl = builder.Configuration["Services:QueueService"]
                       ?? "http://localhost:5005";
 builder.Services.AddSingleton<IQueueService>(_ =>
     MagicOnionClient.Create<IQueueService>(GrpcChannel.ForAddress(queueServiceUrl)));
+
+var recommendationServiceUrl = builder.Configuration["Services:RecommendationService"]
+                               ?? "http://localhost:5009";
+builder.Services.AddSingleton<IRecommendationService>(_ =>
+    MagicOnionClient.Create<IRecommendationService>(GrpcChannel.ForAddress(recommendationServiceUrl)));
 
 
 builder.Services.AddMemoryCache();

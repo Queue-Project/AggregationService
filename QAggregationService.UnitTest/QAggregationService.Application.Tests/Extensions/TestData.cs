@@ -1,8 +1,10 @@
+using BranchService.Contracts.Events.Enums;
 using BranchService.Contracts.Responses;
 using QContracts.Enums;
 using QContracts.Responses;
 using QUserService.Contracts.Responses.EmployeeResponses;
 using RabbitMQ.Client;
+using RecommendationService.Contracts.Responses;
 using CustomerInfo = QUserService.Contracts.Responses.CustomerResponses.CustomerInfo;
 using EmployeeInfo = QUserService.Contracts.Responses.EmployeeResponses.EmployeeInfo;
 using BlockedCustomerInfo = QUserService.Contracts.Responses.BlockedCustomersResponses.BlockedCustomerInfo;
@@ -318,7 +320,7 @@ public static class TestData
             }
         };
     }
-    
+
     public static EmployeeScheduleResponse ScheduleInfoWithEmptySlots()
     {
         return new EmployeeScheduleResponse
@@ -326,6 +328,178 @@ public static class TestData
             EmployeeId = 1,
             Date = new DateOnly(2026, 07, 13),
             Schedules = new List<EmployeeScheduleInfo>()
+        };
+    }
+
+    public static PagedResponse<RecommendedCompanyResponse> CompanyExpectedResponse()
+    {
+        return new PagedResponse<RecommendedCompanyResponse>
+        {
+            Items = new List<RecommendedCompanyResponse>
+            {
+                new RecommendedCompanyResponse
+                {
+                    CompanyId = 1,
+                    CategoryId = 1,
+                    RecommendationScore = 20,
+                    AverageRating = 4.5,
+                    ReviewCount = 4,
+                    ComplaintCount = 0,
+                    CompletedQueues = 10,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                }
+            },
+            PageNumber = 1,
+            PageSize = 15,
+            TotalCount = 1
+        };
+    }
+
+    public static List<CompanyDetailsResponse> CompanyDetailsResponses()
+    {
+        return new List<CompanyDetailsResponse>
+        {
+            new CompanyDetailsResponse
+            {
+                CompanyId = 1,
+                CompanyCategory = CompanyCategory.Healthcare,
+                CompanyName = "Test Name",
+                Address = "Test Address",
+                EmailAddress = "TestEmail@gmail.com",
+                PhoneNumber = "+992923324252"
+            }
+        };
+    }
+
+    public static PagedResponse<RecommendedBranchResponse> BranchExpectedResponse()
+    {
+        return new PagedResponse<RecommendedBranchResponse>
+        {
+            Items = new List<RecommendedBranchResponse>
+            {
+                new RecommendedBranchResponse
+                {
+                    BranchId = 1,
+                    CompanyId = 1,
+                    CategoryId = 1,
+                    RecommendationScore = 20,
+                    AverageRating = 4.5,
+                    ReviewCount = 4,
+                    ComplaintCount = 0,
+                    CompletedQueues = 10,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                }
+            },
+            PageNumber = 1,
+            PageSize = 15,
+            TotalCount = 1
+        };
+    }
+
+    public static List<BranchDetailsResponse> BranchDetailsResponses()
+    {
+        return new List<BranchDetailsResponse>
+        {
+            new BranchDetailsResponse
+            {
+                BranchId = 1,
+                CompanyId = 1,
+                BranchName = "Test Branch Name",
+                CompanyName = "Test Name",
+                Address = "Test Address",
+                PhoneNumber = "+992923324252",
+                IsActive = true
+            }
+        };
+    }
+
+    public static PagedResponse<RecommendedServiceResponse> ServiceExpectedResponse()
+    {
+        return new PagedResponse<RecommendedServiceResponse>
+        {
+            Items = new List<RecommendedServiceResponse>
+            {
+                new RecommendedServiceResponse
+                {
+                    ServiceId = 1,
+                    BranchId = 1,
+                    CompanyId = 1,
+                    CategoryId = 1,
+                    RecommendationScore = 20,
+                    AverageRating = 4.5,
+                    ReviewCount = 4,
+                    ComplaintCount = 0,
+                    CompletedQueues = 10,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                }
+            },
+            PageNumber = 1,
+            PageSize = 15,
+            TotalCount = 1
+        };
+    }
+
+    public static List<ServiceDetailsResponse> ServiceDetailsResponses()
+    {
+        return new List<ServiceDetailsResponse>
+        {
+            new ServiceDetailsResponse
+            {
+                ServiceId = 1,
+                BranchId = 1,
+                CompanyId = 1,
+                BranchName = "Test Branch Name",
+                CompanyName = "Test Name",
+                ServiceName = "Test Service Name",
+                Description = "Test Description",
+                ServiceDuration = 30
+            }
+        };
+    }
+
+    public static PagedResponse<RecommendedEmployeeResponse> EmployeeExpectedResponse()
+    {
+        return new PagedResponse<RecommendedEmployeeResponse>
+        {
+            Items = new List<RecommendedEmployeeResponse>
+            {
+                new RecommendedEmployeeResponse
+                {
+                    EmployeeId = 1,
+                    ServiceId = 1,
+                    BranchId = 1,
+                    CompanyId = 1,
+                    CategoryId = 1,
+                    RecommendationScore = 20,
+                    AverageRating = 4.5,
+                    ReviewCount = 4,
+                    ComplaintCount = 0,
+                    CompletedQueues = 10,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                }
+            },
+            PageNumber = 1,
+            PageSize = 15,
+            TotalCount = 1
+        };
+    }
+
+    public static List<EmployeeDetailsResponse> EmployeeDetailsResponses()
+    {
+        return new List<EmployeeDetailsResponse>
+        {
+            new EmployeeDetailsResponse
+            {
+                EmployeeId = 1,
+                CompanyServiceId = 1,
+                BranchId = 1,
+                CompanyId = 1,
+                FirstName = "Test FN",
+                LastName = "Test LN",
+                Position = "Test Position",
+                EmailAddress = "test@gmail.com",
+                PhoneNumber = "+992934233242"
+            }
         };
     }
 }

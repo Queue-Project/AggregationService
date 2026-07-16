@@ -10,7 +10,7 @@ using QAggregationService.Application.UseCases.Queries.RecommendationService.Get
 namespace QAggregationService.API.Controllers;
 
 [ApiController]
-[Route("api[controller]")]
+[Route("api/[controller]")]
 [Authorize]
 public class RecommendationController : ControllerBase
 {

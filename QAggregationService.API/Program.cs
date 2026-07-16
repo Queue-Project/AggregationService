@@ -9,6 +9,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using QAggregationService.API.Middlewares;
 using QAggregationService.Application.Caching;
 using QAggregationService.Application.Consumers.BlockedCustomerConsumers;
 using QAggregationService.Application.Consumers.BranchConsumers;
@@ -25,17 +26,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(5007, listenOptions => 
-    { 
-        listenOptions.Protocols = HttpProtocols.Http2;
-    });
+    options.ListenAnyIP(5007, listenOptions => { listenOptions.Protocols = HttpProtocols.Http2; });
 
-    options.ListenAnyIP(5008, listenOptions => 
-    { 
-        listenOptions.Protocols = HttpProtocols.Http1;
-    });
+    options.ListenAnyIP(5008, listenOptions => { listenOptions.Protocols = HttpProtocols.Http1; });
 });
-
 
 
 builder.Services.AddMagicOnion();
@@ -51,11 +45,10 @@ var userServiceUrl = builder.Configuration["Services:UserService"]
 builder.Services.AddSingleton<IUserService>(_ =>
     MagicOnionClient.Create<IUserService>(GrpcChannel.ForAddress(userServiceUrl)));
 
-var queueServiceUrl = builder.Configuration["Services:QueueService"] 
-          ?? "http://localhost:5005";
+var queueServiceUrl = builder.Configuration["Services:QueueService"]
+                      ?? "http://localhost:5005";
 builder.Services.AddSingleton<IQueueService>(_ =>
     MagicOnionClient.Create<IQueueService>(GrpcChannel.ForAddress(queueServiceUrl)));
-
 
 
 builder.Services.AddMemoryCache();
@@ -95,20 +88,19 @@ builder.Services.AddMassTransit(x =>
     x.UsingRabbitMq((context, cfg) =>
     {
         var configuration = context.GetService<IConfiguration>();
-        
+
         var host = configuration?["RabbitMQ:Host"] ?? "localhost";
         var port = configuration?.GetValue<ushort?>("RabbitMQ:Port") ?? 5672;
         var username = configuration?["RabbitMQ:Username"] ?? "guest";
         var password = configuration?["RabbitMQ:Password"] ?? "guest";
-        
+
         cfg.Host(host, port, "/", h =>
         {
             h.Username(username);
             h.Password(password);
         });
-        
+
         cfg.ConfigureEndpoints(context);
-        
     });
 });
 
@@ -167,7 +159,6 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -176,12 +167,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.UseHttpsRedirection();
-
-
-
 app.MapControllers();
 
 app.Run();
 
-public partial class Program { }
+public partial class Program
+{
+}

@@ -1,6 +1,7 @@
 using MagicOnion;
 using QAggregationService.Contracts.Requests;
 using QAggregationService.Contracts.Responses;
+using QAggregationService.Contracts.Responses.ScheduleResponse;
 
 namespace QAggregationService.Contracts.Interfaces;
 
@@ -11,4 +12,7 @@ public interface IAggregationService
 
     Task<EmployeeReportResponse> GetEmployeeReport(EmployeeReportRequest request);
     Task<CustomerReportResponse> GetCustomerReport(CustomerReportRequest request);
+
+    Task<EmployeeAvailabilityScheduleResponse> GetEmployeeAvailabilityScheduleByDate(
+        GetEmployeeAvailabilityScheduleRequest request);
 }

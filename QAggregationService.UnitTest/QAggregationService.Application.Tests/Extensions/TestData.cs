@@ -1,6 +1,7 @@
 using BranchService.Contracts.Responses;
 using QContracts.Enums;
 using QContracts.Responses;
+using QUserService.Contracts.Responses.EmployeeResponses;
 using RabbitMQ.Client;
 using CustomerInfo = QUserService.Contracts.Responses.CustomerResponses.CustomerInfo;
 using EmployeeInfo = QUserService.Contracts.Responses.EmployeeResponses.EmployeeInfo;
@@ -292,15 +293,39 @@ public static class TestData
             }
         };
     }
+
+    public static EmployeeScheduleResponse ScheduleInfo()
+    {
+        return new EmployeeScheduleResponse
+        {
+            EmployeeId = 1,
+            Date = new DateOnly(2026, 07, 13),
+            Schedules = new List<EmployeeScheduleInfo>
+            {
+                new EmployeeScheduleInfo
+                {
+                    ScheduleId = 1,
+                    Description = "Before lunch time working hours",
+                    AvailableSlots = new List<TimeSlot>
+                    {
+                        new TimeSlot
+                        {
+                            From = DateTimeOffset.UtcNow,
+                            To = DateTimeOffset.UtcNow.AddHours(1)
+                        }
+                    }
+                }
+            }
+        };
+    }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    public static EmployeeScheduleResponse ScheduleInfoWithEmptySlots()
+    {
+        return new EmployeeScheduleResponse
+        {
+            EmployeeId = 1,
+            Date = new DateOnly(2026, 07, 13),
+            Schedules = new List<EmployeeScheduleInfo>()
+        };
+    }
 }

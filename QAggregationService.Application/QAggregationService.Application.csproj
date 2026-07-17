@@ -16,7 +16,7 @@
       <PackageReference Include="MassTransit.RabbitMQ" Version="8.5.7" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
       <PackageReference Include="QNotificationService.Contracts" Version="1.0.0" />
-      <PackageReference Include="QueueService.Contracts" Version="1.0.6" />
+      <PackageReference Include="QueueService.Contracts" Version="1.0.10" />
       <PackageReference Include="RecommendationService.Contracts" Version="1.0.2-dev.1" />
       <PackageReference Include="StackExchange.Redis" Version="2.7.27" />
       <PackageReference Include="UserService.Contracts" Version="1.0.8" />

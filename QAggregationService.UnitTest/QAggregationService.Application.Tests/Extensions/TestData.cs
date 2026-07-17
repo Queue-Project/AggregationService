@@ -1,6 +1,7 @@
 using BranchService.Contracts.Events.Enums;
 using BranchService.Contracts.Responses;
 using QContracts.Enums;
+using QContracts.Events.Enums;
 using QContracts.Responses;
 using QUserService.Contracts.Responses.EmployeeResponses;
 using RabbitMQ.Client;
@@ -500,6 +501,151 @@ public static class TestData
                 EmailAddress = "test@gmail.com",
                 PhoneNumber = "+992934233242"
             }
+        };
+    }
+
+    public static List<CustomerQueueResponse> ActiveQueues()
+    {
+        return new List<CustomerQueueResponse>
+        {
+            new CustomerQueueResponse()
+            {
+                EmployeeId = 1,
+                BranchId = 1,
+                CompanyId = 1,
+                QueueId = 1,
+                ServiceId = 1,
+                StartTime = DateTimeOffset.UtcNow,
+                Status = UpdatedQueueStatus.Pending
+            },
+            new CustomerQueueResponse()
+            {
+                EmployeeId = 2,
+                BranchId = 1,
+                CompanyId = 1,
+                QueueId = 2,
+                ServiceId = 2,
+                StartTime = DateTimeOffset.UtcNow.AddHours(5),
+                Status = UpdatedQueueStatus.Pending
+            },
+        };
+    }
+
+    public static List<EmployeeDetailsResponse> EmployeeDetailsResponses2()
+    {
+        return new List<EmployeeDetailsResponse>
+        {
+            new EmployeeDetailsResponse
+            {
+                EmployeeId = 1,
+                CompanyServiceId = 1,
+                BranchId = 1,
+                CompanyId = 1,
+                FirstName = "Test FN",
+                LastName = "Test LN",
+                Position = "Test Position",
+                EmailAddress = "test@gmail.com",
+                PhoneNumber = "+992934233242"
+            },
+            new EmployeeDetailsResponse
+            {
+                EmployeeId = 2,
+                CompanyServiceId = 2,
+                BranchId = 1,
+                CompanyId = 1,
+                FirstName = "Test FN",
+                LastName = "Test LN",
+                Position = "Test Position",
+                EmailAddress = "test@gmail.com",
+                PhoneNumber = "+992934233242"
+            },
+        };
+    }
+
+    public static List<ServiceDetailsResponse> ServiceDetailsResponses2()
+    {
+        return new List<ServiceDetailsResponse>
+        {
+            new ServiceDetailsResponse
+            {
+                ServiceId = 1,
+                BranchId = 1,
+                CompanyId = 1,
+                BranchName = "Test Branch Name",
+                CompanyName = "Test Name",
+                ServiceName = "Test Service Name",
+                Description = "Test Description",
+                ServiceDuration = 30
+            },
+            new ServiceDetailsResponse
+            {
+                ServiceId = 2,
+                BranchId = 1,
+                CompanyId = 1,
+                BranchName = "Test Branch Name",
+                CompanyName = "Test Name",
+                ServiceName = "Test Service Name",
+                Description = "Test Description",
+                ServiceDuration = 30
+            }
+        };
+    }
+
+
+    public static QueueTrackingDataResponse QueueTrackingData()
+    {
+        return new QueueTrackingDataResponse()
+        {
+            EmployeeId = 1,
+            CompanyServiceId = 1,
+            QueueId = 1,
+            StartTime = DateTimeOffset.UtcNow.AddHours(5),
+            Status = UpdatedQueueStatus.Pending,
+            QueuesAhead = new List<QueueTrackingItemResponse>
+            {
+                new QueueTrackingItemResponse
+                {
+                    QueueId = 2,
+                    CompanyServiceId = 1,
+                    StartTime = DateTimeOffset.UtcNow
+                }
+            }
+        };
+    }
+    
+    public static List<ServiceDetailsResponse> QueueTrackingDataService()
+    {
+        return new List<ServiceDetailsResponse>
+        {
+            new ServiceDetailsResponse
+            {
+                ServiceId = 1,
+                BranchId = 1,
+                CompanyId = 1,
+                BranchName = "Test Branch Name",
+                CompanyName = "Test Name",
+                ServiceName = "Test Service Name",
+                Description = "Test Description",
+                ServiceDuration = 30
+            }
+        };
+    }
+    
+    public static EmployeeResponse EmployeeResponse()
+    {
+        return new EmployeeResponse()
+        {
+            Id = 1,
+            CompanyId = 1,
+            BranchId = 1,
+            ServiceId = 1,
+            FirstName = "Test First Name",
+            LastName = "Test Last Name",
+            PhoneNumber = "+992923324252",
+            Position = "Test Position",
+            CreatedAt = new DateTime(2026,05,10,08,09,10),
+            IsValid = true,
+            ErrorMessage = null
         };
     }
 }
